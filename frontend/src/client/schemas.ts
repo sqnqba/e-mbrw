@@ -218,6 +218,18 @@ export const $UpdatePassword = {
 
 export const $UserCreate = {
   properties: {
+    ora_id: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 255,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
     email: {
       type: "string",
       isRequired: true,
@@ -244,6 +256,30 @@ export const $UserCreate = {
         },
       ],
     },
+    oso_kod: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 6,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    fir_kod: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 6,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
     password: {
       type: "string",
       isRequired: true,
@@ -255,6 +291,18 @@ export const $UserCreate = {
 
 export const $UserPublic = {
   properties: {
+    ora_id: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 255,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
     email: {
       type: "string",
       isRequired: true,
@@ -275,6 +323,30 @@ export const $UserPublic = {
         {
           type: "string",
           maxLength: 255,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    oso_kod: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 6,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    fir_kod: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 6,
         },
         {
           type: "null",
@@ -320,6 +392,18 @@ export const $UserRegister = {
 
 export const $UserUpdate = {
   properties: {
+    ora_id: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 255,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
     email: {
       type: "any-of",
       contains: [
@@ -347,6 +431,30 @@ export const $UserUpdate = {
         {
           type: "string",
           maxLength: 255,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    oso_kod: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 6,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    fir_kod: {
+      type: "any-of",
+      contains: [
+        {
+          type: "string",
+          maxLength: 6,
         },
         {
           type: "null",

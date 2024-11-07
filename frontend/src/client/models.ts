@@ -53,18 +53,24 @@ export type UpdatePassword = {
 }
 
 export type UserCreate = {
+  ora_id?: string | null
   email: string
   is_active?: boolean
   is_superuser?: boolean
   full_name?: string | null
+  oso_kod?: string | null
+  fir_kod?: string | null
   password: string
 }
 
 export type UserPublic = {
+  ora_id?: string | null
   email: string
   is_active?: boolean
   is_superuser?: boolean
   full_name?: string | null
+  oso_kod?: string | null
+  fir_kod?: string | null
   id: string
 }
 
@@ -75,10 +81,13 @@ export type UserRegister = {
 }
 
 export type UserUpdate = {
+  ora_id?: string | null
   email?: string | null
   is_active?: boolean
   is_superuser?: boolean
   full_name?: string | null
+  oso_kod?: string | null
+  fir_kod?: string | null
   password?: string | null
 }
 
