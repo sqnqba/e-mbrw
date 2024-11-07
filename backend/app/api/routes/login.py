@@ -29,7 +29,7 @@ def login_access_token(
     OAuth2 compatible token login, get an access token for future requests
     """
     user = crud.authenticate(
-        session=session, email=form_data.username, password=form_data.password
+        session=session, login=form_data.username, password=form_data.password
     )
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")

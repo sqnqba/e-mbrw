@@ -23,7 +23,6 @@ import { type SubmitHandler, useForm } from "react-hook-form"
 import Logo from "/assets/images/fastapi-logo.svg"
 import type { Body_login_login_access_token as AccessToken } from "../client"
 import useAuth, { isLoggedIn } from "../hooks/useAuth"
-import { emailPattern } from "../utils"
 
 export const Route = createFileRoute("/login")({
   component: Login,
@@ -88,11 +87,10 @@ function Login() {
           <Input
             id="username"
             {...register("username", {
-              required: "Username is required",
-              pattern: emailPattern,
+              required: "Login nie może być pusty",
             })}
-            placeholder="Email"
-            type="email"
+            placeholder="Safo login lub kod"
+            type="text"
             required
           />
           {errors.username && (

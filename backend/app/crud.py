@@ -1,7 +1,7 @@
 import uuid
 from typing import Any
 
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 
 from app.core.security import get_password_hash, verify_password
 from app.models import Item, ItemCreate, User, UserCreate, UserUpdate
@@ -37,8 +37,16 @@ def get_user_by_email(*, session: Session, email: str) -> User | None:
     return session_user
 
 
-def authenticate(*, session: Session, email: str, password: str) -> User | None:
-    db_user = get_user_by_email(session=session, email=email)
+def get_user_by_safo_credentials(*, session: Session, login: str) -> User | None:
+    statement = select(User).where(or_(User.ora_id == login, User.oso_kod == login))
+    session_user = session.exec(statement).first()
+    return session_user
+
+
+def authenticate(*, session: Session, login: str, password: str) -> User | None:
+    db_user = get_user_by_email(session=session, email=login)
+    if not db_user:
+        db_user = get_user_by_safo_credentials(session=session, login=login)
     if not db_user:
         return None
     if not verify_password(password, db_user.hashed_password):
