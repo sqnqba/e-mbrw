@@ -12,7 +12,7 @@ class UserBase(SQLModel):
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
     oso_kod: str | None = Field(default=None, max_length=6)
-    fir_kod: str | None = Field(default=None, max_length=6)
+    fir_kod: str | None = Field(default=None, max_length=4)
 
 
 # Properties to receive via API on creation
