@@ -11,28 +11,6 @@ export type HTTPValidationError = {
   detail?: Array<ValidationError>
 }
 
-export type ItemCreate = {
-  title: string
-  description?: string | null
-}
-
-export type ItemPublic = {
-  title: string
-  description?: string | null
-  id: string
-  owner_id: string
-}
-
-export type ItemUpdate = {
-  title?: string | null
-  description?: string | null
-}
-
-export type ItemsPublic = {
-  data: Array<ItemPublic>
-  count: number
-}
-
 export type Message = {
   message: string
 }
@@ -40,6 +18,31 @@ export type Message = {
 export type NewPassword = {
   token: string
   new_password: string
+}
+
+export type OrderCreate = {
+  safo_nr?: number | null
+  kh_kod?: string
+  description?: string | null
+}
+
+export type OrderPublic = {
+  safo_nr?: number | null
+  kh_kod?: string
+  description?: string | null
+  id: string
+  owner_id: string
+}
+
+export type OrderUpdate = {
+  safo_nr?: number | null
+  kh_kod?: string
+  description?: string | null
+}
+
+export type OrdersPublic = {
+  data: Array<OrderPublic>
+  count: number
 }
 
 export type Token = {

@@ -5,27 +5,27 @@ import { FiBriefcase, FiHome, FiSettings, FiUsers } from "react-icons/fi"
 
 import type { UserPublic } from "../../client"
 
-const items = [
+const orders = [
   { icon: FiHome, title: "Dashboard", path: "/" },
-  { icon: FiBriefcase, title: "Items", path: "/items" },
+  { icon: FiBriefcase, title: "Orders", path: "/orders" },
   { icon: FiSettings, title: "User Settings", path: "/settings" },
 ]
 
-interface SidebarItemsProps {
+interface SidebarOrdersProps {
   onClose?: () => void
 }
 
-const SidebarItems = ({ onClose }: SidebarItemsProps) => {
+const SidebarOrders = ({ onClose }: SidebarOrdersProps) => {
   const queryClient = useQueryClient()
   const textColor = useColorModeValue("ui.main", "ui.light")
   const bgActive = useColorModeValue("#E2E8F0", "#4A5568")
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
 
-  const finalItems = currentUser?.is_superuser
-    ? [...items, { icon: FiUsers, title: "Admin", path: "/admin" }]
-    : items
+  const finalOrders = currentUser?.is_superuser
+    ? [...orders, { icon: FiUsers, title: "Admin", path: "/admin" }]
+    : orders
 
-  const listItems = finalItems.map(({ icon, title, path }) => (
+  const listOrders = finalOrders.map(({ icon, title, path }) => (
     <Flex
       as={Link}
       to={path}
@@ -48,9 +48,9 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
 
   return (
     <>
-      <Box>{listItems}</Box>
+      <Box>{listOrders}</Box>
     </>
   )
 }
 
-export default SidebarItems
+export default SidebarOrders

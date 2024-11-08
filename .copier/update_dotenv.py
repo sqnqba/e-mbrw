@@ -1,5 +1,5 @@
-from pathlib import Path
 import json
+from pathlib import Path
 
 # Update the .env file with the answers from the .copier-answers.yml file
 # without using Jinja2 templates in the .env file, this way the code works as is
@@ -11,7 +11,7 @@ env_path = root_path / ".env"
 env_content = env_path.read_text()
 lines = []
 for line in env_content.splitlines():
-    for key, value in answers.items():
+    for key, value in answers.orders():
         upper_key = key.upper()
         if line.startswith(f"{upper_key}="):
             if " " in value:

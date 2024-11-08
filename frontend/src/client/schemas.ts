@@ -60,13 +60,49 @@ export const $HTTPValidationError = {
   },
 } as const
 
-export const $ItemCreate = {
+export const $Message = {
   properties: {
-    title: {
+    message: {
       type: "string",
       isRequired: true,
-      maxLength: 255,
-      minLength: 1,
+    },
+  },
+} as const
+
+export const $NewPassword = {
+  properties: {
+    token: {
+      type: "string",
+      isRequired: true,
+    },
+    new_password: {
+      type: "string",
+      isRequired: true,
+      maxLength: 40,
+      minLength: 8,
+    },
+  },
+} as const
+
+export const $OrderCreate = {
+  properties: {
+    safo_nr: {
+      type: "any-of",
+      contains: [
+        {
+          type: "number",
+          exclusiveMinimum: 0,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    kh_kod: {
+      type: "string",
+      default: "000000",
+      maxLength: 6,
+      minLength: 6,
     },
     description: {
       type: "any-of",
@@ -83,13 +119,25 @@ export const $ItemCreate = {
   },
 } as const
 
-export const $ItemPublic = {
+export const $OrderPublic = {
   properties: {
-    title: {
+    safo_nr: {
+      type: "any-of",
+      contains: [
+        {
+          type: "number",
+          exclusiveMinimum: 0,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    kh_kod: {
       type: "string",
-      isRequired: true,
-      maxLength: 255,
-      minLength: 1,
+      default: "000000",
+      maxLength: 6,
+      minLength: 6,
     },
     description: {
       type: "any-of",
@@ -116,20 +164,25 @@ export const $ItemPublic = {
   },
 } as const
 
-export const $ItemUpdate = {
+export const $OrderUpdate = {
   properties: {
-    title: {
+    safo_nr: {
       type: "any-of",
       contains: [
         {
-          type: "string",
-          maxLength: 255,
-          minLength: 1,
+          type: "number",
+          exclusiveMinimum: 0,
         },
         {
           type: "null",
         },
       ],
+    },
+    kh_kod: {
+      type: "string",
+      default: "000000",
+      maxLength: 6,
+      minLength: 6,
     },
     description: {
       type: "any-of",
@@ -146,42 +199,18 @@ export const $ItemUpdate = {
   },
 } as const
 
-export const $ItemsPublic = {
+export const $OrdersPublic = {
   properties: {
     data: {
       type: "array",
       contains: {
-        type: "ItemPublic",
+        type: "OrderPublic",
       },
       isRequired: true,
     },
     count: {
       type: "number",
       isRequired: true,
-    },
-  },
-} as const
-
-export const $Message = {
-  properties: {
-    message: {
-      type: "string",
-      isRequired: true,
-    },
-  },
-} as const
-
-export const $NewPassword = {
-  properties: {
-    token: {
-      type: "string",
-      isRequired: true,
-    },
-    new_password: {
-      type: "string",
-      isRequired: true,
-      maxLength: 40,
-      minLength: 8,
     },
   },
 } as const
@@ -273,7 +302,7 @@ export const $UserCreate = {
       contains: [
         {
           type: "string",
-          maxLength: 6,
+          maxLength: 4,
         },
         {
           type: "null",
@@ -346,7 +375,7 @@ export const $UserPublic = {
       contains: [
         {
           type: "string",
-          maxLength: 6,
+          maxLength: 4,
         },
         {
           type: "null",
@@ -454,7 +483,7 @@ export const $UserUpdate = {
       contains: [
         {
           type: "string",
-          maxLength: 6,
+          maxLength: 4,
         },
         {
           type: "null",

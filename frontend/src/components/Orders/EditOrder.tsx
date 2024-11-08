@@ -15,50 +15,57 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
-import { type ApiError, type ItemCreate, ItemsService } from "../../client"
+import {
+  type ApiError,
+  type OrderPublic,
+  type OrderUpdate,
+  OrdersService,
+} from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
 
-interface AddItemProps {
+interface EditOrderProps {
+  order: OrderPublic
   isOpen: boolean
   onClose: () => void
 }
 
-const AddItem = ({ isOpen, onClose }: AddItemProps) => {
+const EditOrder = ({ order, isOpen, onClose }: EditOrderProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ItemCreate>({
+    formState: { isSubmitting, errors, isDirty },
+  } = useForm<OrderUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: {
-      title: "",
-      description: "",
-    },
+    defaultValues: order,
   })
 
   const mutation = useMutation({
-    mutationFn: (data: ItemCreate) =>
-      ItemsService.createItem({ requestBody: data }),
+    mutationFn: (data: OrderUpdate) =>
+      OrdersService.updateOrder({ id: order.id, requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "Item created successfully.", "success")
-      reset()
+      showToast("Success!", "Order updated successfully.", "success")
       onClose()
     },
     onError: (err: ApiError) => {
       handleError(err, showToast)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["items"] })
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
     },
   })
 
-  const onSubmit: SubmitHandler<ItemCreate> = (data) => {
+  const onSubmit: SubmitHandler<OrderUpdate> = async (data) => {
     mutation.mutate(data)
+  }
+
+  const onCancel = () => {
+    reset()
+    onClose()
   }
 
   return (
@@ -71,21 +78,20 @@ const AddItem = ({ isOpen, onClose }: AddItemProps) => {
       >
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Add Item</ModalHeader>
+          <ModalHeader>Edit Order</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl isRequired isInvalid={!!errors.title}>
-              <FormLabel htmlFor="title">Title</FormLabel>
+            <FormControl isInvalid={!!errors.kh_kod}>
+              <FormLabel htmlFor="kh_kod">Kontrahent</FormLabel>
               <Input
-                id="title"
-                {...register("title", {
-                  required: "Title is required.",
+                id="kh_kod"
+                {...register("kh_kod", {
+                  // required: "Title is required",
                 })}
-                placeholder="Title"
                 type="text"
               />
-              {errors.title && (
-                <FormErrorMessage>{errors.title.message}</FormErrorMessage>
+              {errors.kh_kod && (
+                <FormErrorMessage>{errors.kh_kod.message}</FormErrorMessage>
               )}
             </FormControl>
             <FormControl mt={4}>
@@ -98,12 +104,16 @@ const AddItem = ({ isOpen, onClose }: AddItemProps) => {
               />
             </FormControl>
           </ModalBody>
-
           <ModalFooter gap={3}>
-            <Button variant="primary" type="submit" isLoading={isSubmitting}>
+            <Button
+              variant="primary"
+              type="submit"
+              isLoading={isSubmitting}
+              isDisabled={!isDirty}
+            >
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onCancel}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -111,4 +121,4 @@ const AddItem = ({ isOpen, onClose }: AddItemProps) => {
   )
 }
 
-export default AddItem
+export default EditOrder

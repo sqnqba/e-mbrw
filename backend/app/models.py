@@ -1,6 +1,8 @@
 import uuid
+from ast import List
+from re import L
 
-from pydantic import EmailStr
+from pydantic import EmailStr, PositiveInt
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -46,7 +48,7 @@ class UpdatePassword(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
-    items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    orders: list["Order"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
@@ -60,39 +62,45 @@ class UsersPublic(SQLModel):
 
 
 # Shared properties
-class ItemBase(SQLModel):
-    title: str = Field(min_length=1, max_length=255)
+class OrderBase(SQLModel):
+    safo_nr: PositiveInt | None = Field(default=None, index=True)
+    kh_kod: str = Field(default="000000", min_length=6, max_length=6)
+    # title: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
 
 
-# Properties to receive on item creation
-class ItemCreate(ItemBase):
+# Properties to receive on order creation
+class OrderCreate(OrderBase):
     pass
 
 
-# Properties to receive on item update
-class ItemUpdate(ItemBase):
-    title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
+# Properties to receive on order update
+class OrderUpdate(OrderBase):
+    kh_kod: str = Field(default="000000", min_length=6, max_length=6)
+    # title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
 
 
 # Database model, database table inferred from class name
-class Item(ItemBase, table=True):
+class Order(OrderBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    title: str = Field(max_length=255)
+    safo_id: PositiveInt | None = Field(default=None, index=True)
+    kh_kod: str = Field(default="000000", min_length=6, max_length=6)
+    # title: str = Field(max_length=255)
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    owner: User | None = Relationship(back_populates="items")
+    owner: User | None = Relationship(back_populates="orders")
+    items: list["OrderItem"] = Relationship(back_populates="order", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
-class ItemPublic(ItemBase):
+class OrderPublic(OrderBase):
     id: uuid.UUID
     owner_id: uuid.UUID
 
 
-class ItemsPublic(SQLModel):
-    data: list[ItemPublic]
+class OrdersPublic(SQLModel):
+    data: list[OrderPublic]
     count: int
 
 
@@ -115,3 +123,20 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+
+
+class Product(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    name: str
+    description: str
+    price: float
+    orders: list["OrderItem"] = Relationship(back_populates="product")
+
+
+class OrderItem(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    order_id: uuid.UUID = Field(foreign_key="order.id")
+    order: Order = Relationship(back_populates="items")
+    product_id: uuid.UUID = Field(foreign_key="product.id")
+    product: Product = Relationship(back_populates="orders")
+    quantity: int

@@ -14,10 +14,10 @@ import type {
   UsersPublic,
   UserUpdate,
   UserUpdateMe,
-  ItemCreate,
-  ItemPublic,
-  ItemsPublic,
-  ItemUpdate,
+  OrderCreate,
+  OrderPublic,
+  OrdersPublic,
+  OrderUpdate,
 } from "./models"
 
 export type TDataLoginAccessToken = {
@@ -400,38 +400,38 @@ export class UtilsService {
   }
 }
 
-export type TDataReadItems = {
+export type TDataReadOrders = {
   limit?: number
   skip?: number
 }
-export type TDataCreateItem = {
-  requestBody: ItemCreate
+export type TDataCreateOrder = {
+  requestBody: OrderCreate
 }
-export type TDataReadItem = {
+export type TDataReadOrder = {
   id: string
 }
-export type TDataUpdateItem = {
+export type TDataUpdateOrder = {
   id: string
-  requestBody: ItemUpdate
+  requestBody: OrderUpdate
 }
-export type TDataDeleteItem = {
+export type TDataDeleteOrder = {
   id: string
 }
 
-export class ItemsService {
+export class OrdersService {
   /**
-   * Read Items
-   * Retrieve items.
-   * @returns ItemsPublic Successful Response
+   * Read Orders
+   * Retrieve orders.
+   * @returns OrdersPublic Successful Response
    * @throws ApiError
    */
-  public static readItems(
-    data: TDataReadItems = {},
-  ): CancelablePromise<ItemsPublic> {
+  public static readOrders(
+    data: TDataReadOrders = {},
+  ): CancelablePromise<OrdersPublic> {
     const { limit = 100, skip = 0 } = data
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/v1/items/",
+      url: "/api/v1/orders/",
       query: {
         skip,
         limit,
@@ -443,18 +443,18 @@ export class ItemsService {
   }
 
   /**
-   * Create Item
-   * Create new item.
-   * @returns ItemPublic Successful Response
+   * Create Order
+   * Create new order.
+   * @returns OrderPublic Successful Response
    * @throws ApiError
    */
-  public static createItem(
-    data: TDataCreateItem,
-  ): CancelablePromise<ItemPublic> {
+  public static createOrder(
+    data: TDataCreateOrder,
+  ): CancelablePromise<OrderPublic> {
     const { requestBody } = data
     return __request(OpenAPI, {
       method: "POST",
-      url: "/api/v1/items/",
+      url: "/api/v1/orders/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
@@ -464,16 +464,18 @@ export class ItemsService {
   }
 
   /**
-   * Read Item
-   * Get item by ID.
-   * @returns ItemPublic Successful Response
+   * Read Order
+   * Get order by ID.
+   * @returns OrderPublic Successful Response
    * @throws ApiError
    */
-  public static readItem(data: TDataReadItem): CancelablePromise<ItemPublic> {
+  public static readOrder(
+    data: TDataReadOrder,
+  ): CancelablePromise<OrderPublic> {
     const { id } = data
     return __request(OpenAPI, {
       method: "GET",
-      url: "/api/v1/items/{id}",
+      url: "/api/v1/orders/{id}",
       path: {
         id,
       },
@@ -484,18 +486,18 @@ export class ItemsService {
   }
 
   /**
-   * Update Item
-   * Update an item.
-   * @returns ItemPublic Successful Response
+   * Update Order
+   * Update an order.
+   * @returns OrderPublic Successful Response
    * @throws ApiError
    */
-  public static updateItem(
-    data: TDataUpdateItem,
-  ): CancelablePromise<ItemPublic> {
+  public static updateOrder(
+    data: TDataUpdateOrder,
+  ): CancelablePromise<OrderPublic> {
     const { id, requestBody } = data
     return __request(OpenAPI, {
       method: "PUT",
-      url: "/api/v1/items/{id}",
+      url: "/api/v1/orders/{id}",
       path: {
         id,
       },
@@ -508,16 +510,18 @@ export class ItemsService {
   }
 
   /**
-   * Delete Item
-   * Delete an item.
+   * Delete Order
+   * Delete an order.
    * @returns Message Successful Response
    * @throws ApiError
    */
-  public static deleteItem(data: TDataDeleteItem): CancelablePromise<Message> {
+  public static deleteOrder(
+    data: TDataDeleteOrder,
+  ): CancelablePromise<Message> {
     const { id } = data
     return __request(OpenAPI, {
       method: "DELETE",
-      url: "/api/v1/items/{id}",
+      url: "/api/v1/orders/{id}",
       path: {
         id,
       },
