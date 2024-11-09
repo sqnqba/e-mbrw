@@ -1,9 +1,8 @@
-from backend.app.tests.utils.user import create_random_user
-from backend.app.tests.utils.utils import random_lower_string, random_oso_kod
+from app.tests.utils.user import create_random_user
+from app.tests.utils.utils import random_lower_string, random_oso_kod
 from sqlmodel import Session
 from app.crud import order as crud
 
-from app import create_order
 from app.models import OrderCreate
 
 

@@ -9,7 +9,7 @@ from sqlmodel import Session
 def test_create_order(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"kh_kod": "Foo", "description": "Fighters"}
+    data = {"kh_kod": "FooBar", "description": "Fighters"}
     response = client.post(
         f"{settings.API_V1_STR}/orders/",
         headers=superuser_token_headers,
@@ -82,7 +82,7 @@ def test_update_order(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     order = create_random_order(db)
-    data = {"kh_kod": "Updated kh_kod", "description": "Updated description"}
+    data = {"kh_kod": "XXXXXX", "description": "Updated description"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{order.id}",
         headers=superuser_token_headers,
@@ -99,7 +99,7 @@ def test_update_order(
 def test_update_order_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"kh_kod": "Updated kh_kod", "description": "Updated description"}
+    data = {"kh_kod": "XXXXXX", "description": "Updated description"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{uuid.uuid4()}",
         headers=superuser_token_headers,
@@ -114,7 +114,7 @@ def test_update_order_not_enough_permissions(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     order = create_random_order(db)
-    data = {"kh_kod": "Updated kh_kod", "description": "Updated description"}
+    data = {"kh_kod": "XXXXXX", "description": "Updated description"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{order.id}",
         headers=normal_user_token_headers,

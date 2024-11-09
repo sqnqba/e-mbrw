@@ -9,7 +9,7 @@ type OptionsType = {
 }
 
 const fillForm = async (page: Page, email: string, password: string) => {
-  await page.getByPlaceholder("Email").fill(email)
+  await page.getByPlaceholder("Safo login lub kod").fill(email)
   await page.getByPlaceholder("Password", { exact: true }).fill(password)
 }
 
@@ -27,7 +27,7 @@ const verifyInput = async (
 test("Inputs are visible, empty and editable", async ({ page }) => {
   await page.goto("/login")
 
-  await verifyInput(page, "Email")
+  await verifyInput(page, "Safo login lub kod")
   await verifyInput(page, "Password", { exact: true })
 })
 
@@ -58,13 +58,13 @@ test("Log in with valid email and password ", async ({ page }) => {
   ).toBeVisible()
 })
 
-test("Log in with invalid email", async ({ page }) => {
+test("Log in with empty username", async ({ page }) => {
   await page.goto("/login")
 
-  await fillForm(page, "invalidemail", firstSuperuserPassword)
+  await fillForm(page, "", firstSuperuserPassword)
   await page.getByRole("button", { name: "Log In" }).click()
 
-  await expect(page.getByText("Invalid email address")).toBeVisible()
+  await expect(page.getByText("Login nie może być pusty")).toBeVisible()
 })
 
 test("Log in with invalid password", async ({ page }) => {
