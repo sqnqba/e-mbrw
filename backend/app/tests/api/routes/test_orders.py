@@ -9,7 +9,7 @@ from sqlmodel import Session
 def test_create_order(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"title": "Foo", "description": "Fighters"}
+    data = {"kh_kod": "Foo", "description": "Fighters"}
     response = client.post(
         f"{settings.API_V1_STR}/orders/",
         headers=superuser_token_headers,
@@ -17,7 +17,7 @@ def test_create_order(
     )
     assert response.status_code == 200
     content = response.json()
-    assert content["title"] == data["title"]
+    assert content["kh_kod"] == data["kh_kod"]
     assert content["description"] == data["description"]
     assert "id" in content
     assert "owner_id" in content
@@ -33,7 +33,7 @@ def test_read_order(
     )
     assert response.status_code == 200
     content = response.json()
-    assert content["title"] == order.title
+    assert content["kh_kod"] == order.kh_kod
     assert content["description"] == order.description
     assert content["id"] == str(order.id)
     assert content["owner_id"] == str(order.owner_id)
@@ -82,7 +82,7 @@ def test_update_order(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     order = create_random_order(db)
-    data = {"title": "Updated title", "description": "Updated description"}
+    data = {"kh_kod": "Updated kh_kod", "description": "Updated description"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{order.id}",
         headers=superuser_token_headers,
@@ -90,7 +90,7 @@ def test_update_order(
     )
     assert response.status_code == 200
     content = response.json()
-    assert content["title"] == data["title"]
+    assert content["kh_kod"] == data["kh_kod"]
     assert content["description"] == data["description"]
     assert content["id"] == str(order.id)
     assert content["owner_id"] == str(order.owner_id)
@@ -99,7 +99,7 @@ def test_update_order(
 def test_update_order_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"title": "Updated title", "description": "Updated description"}
+    data = {"kh_kod": "Updated kh_kod", "description": "Updated description"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{uuid.uuid4()}",
         headers=superuser_token_headers,
@@ -114,7 +114,7 @@ def test_update_order_not_enough_permissions(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     order = create_random_order(db)
-    data = {"title": "Updated title", "description": "Updated description"}
+    data = {"kh_kod": "Updated kh_kod", "description": "Updated description"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{order.id}",
         headers=normal_user_token_headers,
