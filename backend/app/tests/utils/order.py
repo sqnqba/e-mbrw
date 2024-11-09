@@ -1,8 +1,9 @@
+from sqlmodel import Session
+
 from app.crud import order as crud
 from app.models import Order, OrderCreate
 from app.tests.utils.user import create_random_user
 from app.tests.utils.utils import random_lower_string, random_oso_kod
-from sqlmodel import Session
 
 
 def create_random_order(db: Session) -> Order:

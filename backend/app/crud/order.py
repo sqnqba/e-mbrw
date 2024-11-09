@@ -1,9 +1,8 @@
 import uuid
-from typing import Any
 
-from app.core.security import get_password_hash, verify_password
-from app.models import Order, OrderCreate, User, UserCreate, UserUpdate
-from sqlmodel import Session, or_, select
+from sqlmodel import Session
+
+from app.models import Order, OrderCreate
 
 
 def create_order(

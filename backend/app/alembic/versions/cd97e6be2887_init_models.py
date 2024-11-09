@@ -1,7 +1,7 @@
 """Init models
 
 Revision ID: cd97e6be2887
-Revises: 
+Revises:
 Create Date: 2024-11-09 22:13:19.678872
 
 """

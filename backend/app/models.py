@@ -1,6 +1,4 @@
 import uuid
-from ast import List
-from re import L
 
 from pydantic import EmailStr, PositiveInt
 from sqlmodel import Field, Relationship, SQLModel

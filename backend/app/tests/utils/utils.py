@@ -13,8 +13,10 @@ def random_lower_string() -> str:
 def random_oso_kod() -> str:
     return "".join(random.choices(string.digits, k=6))
 
+
 def random_fir_kod() -> str:
     return "".join(random.choices(string.digits, k=4))
+
 
 def random_email() -> str:
     return f"{random_lower_string()}@{random_lower_string()}.com"

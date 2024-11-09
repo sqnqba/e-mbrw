@@ -1,10 +1,18 @@
 import uuid
 from typing import Any
 
-from app.api.deps import CurrentUser, SessionDep
-from app.models import Message, Order, OrderCreate, OrderPublic,OrdersPublic, OrderUpdate
 from fastapi import APIRouter, HTTPException
 from sqlmodel import func, select
+
+from app.api.deps import CurrentUser, SessionDep
+from app.models import (
+    Message,
+    Order,
+    OrderCreate,
+    OrderPublic,
+    OrdersPublic,
+    OrderUpdate,
+)
 
 router = APIRouter()
 
