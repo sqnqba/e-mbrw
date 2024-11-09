@@ -12,4 +12,4 @@ def create_random_order(db: Session) -> Order:
     title = random_lower_string()
     description = random_lower_string()
     order_in = OrderCreate(title=title, description=description)
-    return user.create_order(session=db, order_in=order_in, owner_id=owner_id)
+    return crud.create_order(session=db, order_in=order_in, owner_id=owner_id)
