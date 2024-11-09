@@ -1,8 +1,8 @@
 """Init models
 
-Revision ID: fa003de80033
+Revision ID: cd97e6be2887
 Revises: 
-Create Date: 2024-11-08 13:40:37.517382
+Create Date: 2024-11-09 22:13:19.678872
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel.sql.sqltypes
 
 
 # revision identifiers, used by Alembic.
-revision = 'fa003de80033'
+revision = 'cd97e6be2887'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,12 +33,12 @@ def upgrade():
     sa.Column('is_superuser', sa.Boolean(), nullable=False),
     sa.Column('full_name', sqlmodel.sql.sqltypes.AutoString(length=255), nullable=True),
     sa.Column('oso_kod', sqlmodel.sql.sqltypes.AutoString(length=6), nullable=True),
-    sa.Column('fir_kod', sqlmodel.sql.sqltypes.AutoString(length=4), nullable=True),
+    sa.Column('fir_kod', sqlmodel.sql.sqltypes.AutoString(length=6), nullable=True),
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('hashed_password', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
+    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=False)
     op.create_index(op.f('ix_user_ora_id'), 'user', ['ora_id'], unique=True)
     op.create_table('order',
     sa.Column('safo_nr', sa.Integer(), nullable=True),

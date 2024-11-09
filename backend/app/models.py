@@ -9,12 +9,12 @@ from sqlmodel import Field, Relationship, SQLModel
 # Shared properties
 class UserBase(SQLModel):
     ora_id: str | None = Field(unique=True, default=None, index=True, max_length=255)
-    email: EmailStr = Field(unique=True, index=True, max_length=255)
+    email: EmailStr = Field(index=True, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
-    oso_kod: str | None = Field(default=None, max_length=6)
-    fir_kod: str | None = Field(default=None, max_length=4)
+    oso_kod: str | None = Field(default=None, min_length=6, max_length=6)
+    fir_kod: str | None = Field(default=None, min_length=4, max_length=6)
 
 
 # Properties to receive via API on creation
