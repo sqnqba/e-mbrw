@@ -1,8 +1,7 @@
 from app.core.config import settings
+from app.crud import user as crud
 from app.models import User, UserCreate
 from sqlmodel import Session, create_engine, select
-
-from app.crud import user as crud
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
@@ -29,5 +28,8 @@ def init_db(session: Session) -> None:
             email=settings.FIRST_SUPERUSER,
             password=settings.FIRST_SUPERUSER_PASSWORD,
             is_superuser=True,
+            ora_id=settings.FIRST_SUPERUSER_ORA_ID,
+            oso_kod=settings.FIRST_SUPERUSER_OSO_KOD,
+            fir_kod=settings.FIRST_SUPERUSER_FIR_KOD,
         )
         user = crud.create_user(session=session, user_create=user_in)
