@@ -6,7 +6,7 @@ from app.tests.utils.user import create_random_user
 from app.tests.utils.utils import random_lower_string, random_oso_kod
 
 
-def create_random_order(db: Session, owner: User = None) -> Order:
+def create_random_order(db: Session, owner: User | None = None) -> Order:
     if owner is None:
         owner = create_random_user(db)
         assert owner is not None

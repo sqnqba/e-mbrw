@@ -12,7 +12,7 @@ class UserBase(SQLModel):
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
     oso_kod: str | None = Field(default=None, min_length=6, max_length=6)
-    fir_kod: str | None = Field(default=None, min_length=4, max_length=4)
+    fir_kod: str = Field(default="", min_length=4, max_length=4)
 
 
 # Properties to receive via API on creation
@@ -63,7 +63,7 @@ class UsersPublic(SQLModel):
 class OrderBase(SQLModel):
     safo_nr: PositiveInt | None = Field(default=None, index=True)
     kh_kod: str = Field(default="000000", min_length=6, max_length=6)
-    fir_kod: str | None = Field(default=None, min_length=4, max_length=4)
+    fir_kod: str = Field(default="", min_length=4, max_length=4)
     # title: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
 

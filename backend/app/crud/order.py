@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Sequence
 
 from sqlmodel import Session, func, select
 
@@ -22,7 +23,7 @@ def read_order(*, session: Session, id: uuid.UUID) -> Order | None:
 
 def read_all_orders(
     *, session: Session, skip: int = 0, limit: int = 100
-) -> tuple[list[Order], int]:
+) -> tuple[Sequence[Order], int]:
     count_stmt = select(func.count()).select_from(Order)
     count = session.exec(count_stmt).one()
 
@@ -33,7 +34,7 @@ def read_all_orders(
 
 def read_user_orders(
     *, session: Session, current_user: CurrentUser, skip: int = 0, limit: int = 100
-) -> tuple[list[Order], int]:
+) -> tuple[Sequence[Order], int]:
     count_stmt = (
         select(func.count()).select_from(Order).where(Order.owner_id == current_user.id)
     )
@@ -48,7 +49,7 @@ def read_user_orders(
 
 def read_fir_orders(
     *, session: Session, fir_kod: str, skip: int = 0, limit: int = 100
-) -> tuple[list[Order], int]:
+) -> tuple[Sequence[Order], int]:
     count_stmt = select(func.count()).select_from(Order).where(Order.fir_kod == fir_kod)
     count = session.exec(count_stmt).one()
 
