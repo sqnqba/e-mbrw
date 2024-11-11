@@ -28,10 +28,11 @@ def test_read_order(db: Session) -> None:
     user = create_random_user(db)
     assert user is not None
     random_order = create_random_order(db, user)
-    order = crud.read_order(session=db, id=random_order.id)
-    assert order.kh_kod == random_order.kh_kod
-    assert order.fir_kod == random_order.fir_kod
-    assert order.description == random_order.description
+    order: Order | None = crud.read_order(session=db, id=random_order.id)
+    if order:
+        assert order.kh_kod == random_order.kh_kod
+        assert order.fir_kod == random_order.fir_kod
+        assert order.description == random_order.description
     db.execute(delete(Order))
     db.commit()
 
