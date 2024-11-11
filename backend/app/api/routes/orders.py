@@ -2,9 +2,9 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
+from app.crud import order as crud
 from app.models import (
     Message,
     Order,
@@ -17,6 +17,31 @@ from app.models import (
 router = APIRouter()
 
 
+@router.post("/", response_model=OrderPublic)
+def create_order(
+    *, session: SessionDep, current_user: CurrentUser, order_in: OrderCreate
+) -> Any:
+    """
+    Create new order.
+    """
+    return crud.create_order(
+        session=session, order_in=order_in, owner_id=current_user.id
+    )
+
+
+@router.get("/{id}", response_model=OrderPublic)
+def read_order(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
+    """
+    Get order by ID.
+    """
+    order = crud.read_order(session=session, id=id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if not current_user.is_superuser and (order.owner_id != current_user.id):
+        raise HTTPException(status_code=400, detail="Not enough permissions")
+    return order
+
+
 @router.get("/", response_model=OrdersPublic)
 def read_orders(
     session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100
@@ -26,53 +51,12 @@ def read_orders(
     """
 
     if current_user.is_superuser:
-        count_statement = select(func.count()).select_from(Order)
-        count = session.exec(count_statement).one()
-        statement = select(Order).offset(skip).limit(limit)
-        orders = session.exec(statement).all()
+        orders, count = crud.read_all_orders(session=session, skip=skip, limit=limit)
     else:
-        count_statement = (
-            select(func.count())
-            .select_from(Order)
-            .where(Order.owner_id == current_user.id)
+        orders, count = crud.read_user_orders(
+            session=session, current_user=current_user, skip=skip, limit=limit
         )
-        count = session.exec(count_statement).one()
-        statement = (
-            select(Order)
-            .where(Order.owner_id == current_user.id)
-            .offset(skip)
-            .limit(limit)
-        )
-        orders = session.exec(statement).all()
-
     return OrdersPublic(data=orders, count=count)
-
-
-@router.get("/{id}", response_model=OrderPublic)
-def read_order(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
-    """
-    Get order by ID.
-    """
-    order = session.get(Order, id)
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-    if not current_user.is_superuser and (order.owner_id != current_user.id):
-        raise HTTPException(status_code=400, detail="Not enough permissions")
-    return order
-
-
-@router.post("/", response_model=OrderPublic)
-def create_order(
-    *, session: SessionDep, current_user: CurrentUser, order_in: OrderCreate
-) -> Any:
-    """
-    Create new order.
-    """
-    order = Order.model_validate(order_in, update={"owner_id": current_user.id})
-    session.add(order)
-    session.commit()
-    session.refresh(order)
-    return order
 
 
 @router.put("/{id}", response_model=OrderPublic)
