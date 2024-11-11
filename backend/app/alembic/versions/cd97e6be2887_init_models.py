@@ -33,7 +33,7 @@ def upgrade():
     sa.Column('is_superuser', sa.Boolean(), nullable=False),
     sa.Column('full_name', sqlmodel.sql.sqltypes.AutoString(length=255), nullable=True),
     sa.Column('oso_kod', sqlmodel.sql.sqltypes.AutoString(length=6), nullable=True),
-    sa.Column('fir_kod', sqlmodel.sql.sqltypes.AutoString(length=6), nullable=True),
+    sa.Column('fir_kod', sqlmodel.sql.sqltypes.AutoString(length=4), nullable=True),
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('hashed_password', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.PrimaryKeyConstraint('id')
@@ -46,6 +46,7 @@ def upgrade():
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('safo_id', sa.Integer(), nullable=True),
     sa.Column('kh_kod', sqlmodel.sql.sqltypes.AutoString(length=6), nullable=False),
+    sa.Column('fir_kod', sqlmodel.sql.sqltypes.AutoString(length=4), nullable=True),
     sa.Column('owner_id', sa.Uuid(), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
