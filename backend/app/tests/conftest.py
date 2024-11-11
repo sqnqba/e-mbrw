@@ -19,7 +19,7 @@ def db() -> Generator[Session, None, None]:
         yield session
         statement = delete(Order)
         session.execute(statement)
-        statement = delete(User)
+        statement = delete(User).where(User.email != settings.FIRST_SUPERUSER)
         session.execute(statement)
         session.commit()
 
