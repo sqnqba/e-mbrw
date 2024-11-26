@@ -10,7 +10,7 @@ from app.tests.utils.order import create_random_order
 def test_create_order(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"kh_kod": "FooBar", "description": "Fighters"}
+    data = {"kh_kod": "FooBar", "comment": "Fighters"}
     response = client.post(
         f"{settings.API_V1_STR}/orders/",
         headers=superuser_token_headers,
@@ -19,7 +19,7 @@ def test_create_order(
     assert response.status_code == 200
     content = response.json()
     assert content["kh_kod"] == data["kh_kod"]
-    assert content["description"] == data["description"]
+    assert content["comment"] == data["comment"]
     assert "id" in content
     assert "owner_id" in content
 
@@ -35,7 +35,7 @@ def test_read_order(
     assert response.status_code == 200
     content = response.json()
     assert content["kh_kod"] == order.kh_kod
-    assert content["description"] == order.description
+    assert content["comment"] == order.comment
     assert content["id"] == str(order.id)
     assert content["owner_id"] == str(order.owner_id)
 
@@ -83,7 +83,7 @@ def test_update_order(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     order = create_random_order(db)
-    data = {"kh_kod": "XXXXXX", "description": "Updated description"}
+    data = {"kh_kod": "XXXXXX", "comment": "Updated comment"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{order.id}",
         headers=superuser_token_headers,
@@ -92,7 +92,7 @@ def test_update_order(
     assert response.status_code == 200
     content = response.json()
     assert content["kh_kod"] == data["kh_kod"]
-    assert content["description"] == data["description"]
+    assert content["comment"] == data["comment"]
     assert content["id"] == str(order.id)
     assert content["owner_id"] == str(order.owner_id)
 
@@ -100,7 +100,7 @@ def test_update_order(
 def test_update_order_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"kh_kod": "XXXXXX", "description": "Updated description"}
+    data = {"kh_kod": "XXXXXX", "comment": "Updated comment"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{uuid.uuid4()}",
         headers=superuser_token_headers,
@@ -115,7 +115,7 @@ def test_update_order_not_enough_permissions(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     order = create_random_order(db)
-    data = {"kh_kod": "XXXXXX", "description": "Updated description"}
+    data = {"kh_kod": "XXXXXX", "comment": "Updated comment"}
     response = client.put(
         f"{settings.API_V1_STR}/orders/{order.id}",
         headers=normal_user_token_headers,

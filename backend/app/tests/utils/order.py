@@ -13,6 +13,6 @@ def create_random_order(db: Session, owner: User | None = None) -> Order:
     owner_id = owner.id
     kh_kod = random_oso_kod()
     fir_kod = owner.fir_kod
-    description = random_lower_string()
-    order_in = OrderCreate(kh_kod=kh_kod, fir_kod=fir_kod, description=description)
+    comment = random_lower_string()
+    order_in = OrderCreate(kh_kod=kh_kod, fir_kod=fir_kod, comment=comment)
     return crud.create_order(session=db, order_in=order_in, owner_id=owner_id)

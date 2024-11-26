@@ -7,7 +7,7 @@ from sqlmodel import Field, Relationship, SQLModel
 # Shared properties
 class UserBase(SQLModel):
     ora_id: str | None = Field(unique=True, default=None, index=True, max_length=255)
-    email: EmailStr = Field(index=True, max_length=255)
+    email: EmailStr | None = Field(default=None, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
@@ -21,7 +21,7 @@ class UserCreate(UserBase):
 
 
 class UserRegister(SQLModel):
-    email: EmailStr = Field(max_length=255)
+    ora_id: str = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
     full_name: str | None = Field(default=None, max_length=255)
 
@@ -64,8 +64,7 @@ class OrderBase(SQLModel):
     safo_nr: PositiveInt | None = Field(default=None, index=True)
     kh_kod: str = Field(default="000000", min_length=6, max_length=6)
     fir_kod: str = Field(default="C000", min_length=4, max_length=4)
-    # title: str = Field(min_length=1, max_length=255)
-    description: str | None = Field(default=None, max_length=255)
+    comment: str | None = Field(default=None, max_length=512)
 
 
 # Properties to receive on order creation
@@ -76,7 +75,6 @@ class OrderCreate(OrderBase):
 # Properties to receive on order update
 class OrderUpdate(OrderBase):
     kh_kod: str = Field(default="000000", min_length=6, max_length=6)
-    # title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
 
 
 # Database model, database table inferred from class name
@@ -84,7 +82,6 @@ class Order(OrderBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     safo_id: PositiveInt | None = Field(default=None, index=True)
     kh_kod: str = Field(default="000000", min_length=6, max_length=6)
-    # title: str = Field(max_length=255)
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
@@ -111,6 +108,7 @@ class Message(SQLModel):
 # JSON payload containing access token
 class Token(SQLModel):
     access_token: str
+    refresh_token: str
     token_type: str = "bearer"
 
 

@@ -13,12 +13,12 @@ def test_create_order(db: Session) -> None:
     assert owner_id is not None
     kh_kod = random_oso_kod()
     fir_kod = random_fir_kod()
-    description = random_lower_string()
-    order_in = OrderCreate(kh_kod=kh_kod, fir_kod=fir_kod, description=description)
+    comment = random_lower_string()
+    order_in = OrderCreate(kh_kod=kh_kod, fir_kod=fir_kod, comment=comment)
     order = crud.create_order(session=db, order_in=order_in, owner_id=user.id)
     assert order.kh_kod == kh_kod
     assert order.fir_kod == fir_kod
-    assert order.description == description
+    assert order.comment == comment
     assert order.owner_id == owner_id
     db.execute(delete(Order))
     db.commit()
@@ -32,7 +32,7 @@ def test_read_order(db: Session) -> None:
     if order:
         assert order.kh_kod == random_order.kh_kod
         assert order.fir_kod == random_order.fir_kod
-        assert order.description == random_order.description
+        assert order.comment == random_order.comment
     db.execute(delete(Order))
     db.commit()
 

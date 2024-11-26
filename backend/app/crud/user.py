@@ -36,8 +36,8 @@ def get_user_by_email(*, session: Session, email: str) -> User | None:
     return session_user
 
 
-def get_user_by_safo_credentials(*, session: Session, login: str) -> User | None:
-    statement = select(User).where(or_(User.ora_id == login, User.oso_kod == login))
+def get_user_by_safo_credentials(*, session: Session, ora_id: str) -> User | None:
+    statement = select(User).where(or_(User.ora_id == ora_id, User.oso_kod == ora_id))
     session_user = session.exec(statement).first()
     return session_user
 
@@ -45,7 +45,7 @@ def get_user_by_safo_credentials(*, session: Session, login: str) -> User | None
 def authenticate(*, session: Session, login: str, password: str) -> User | None:
     db_user = get_user_by_email(session=session, email=login)
     if not db_user:
-        db_user = get_user_by_safo_credentials(session=session, login=login)
+        db_user = get_user_by_safo_credentials(session=session, ora_id=login)
     if not db_user:
         return None
     if not verify_password(password, db_user.hashed_password):
