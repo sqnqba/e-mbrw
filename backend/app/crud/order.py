@@ -1,4 +1,3 @@
-import uuid
 from collections.abc import Sequence
 
 from sqlmodel import Session, func, select
@@ -7,9 +6,7 @@ from app.api.deps import CurrentUser
 from app.models import Order, OrderCreate
 
 
-def create_order(
-    *, session: Session, order_in: OrderCreate, owner_id: uuid.UUID
-) -> Order:
+def create_order(*, session: Session, order_in: OrderCreate, owner_id: int) -> Order:
     db_order = Order.model_validate(order_in, update={"owner_id": owner_id})
     session.add(db_order)
     session.commit()
@@ -17,7 +14,7 @@ def create_order(
     return db_order
 
 
-def read_order(*, session: Session, id: uuid.UUID) -> Order | None:
+def read_order(*, session: Session, id: int) -> Order | None:
     return session.get(Order, id)
 
 

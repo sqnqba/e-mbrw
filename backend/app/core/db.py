@@ -1,8 +1,10 @@
+import random
+
 from sqlmodel import Session, create_engine, select
 
 from app.core.config import settings
-from app.crud import user as crud
-from app.models import User, UserCreate
+from app.crud import user as user_crud
+from app.models import Order, Product, User, UserCreate
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
@@ -33,4 +35,22 @@ def init_db(session: Session) -> None:
             oso_kod=settings.FIRST_SUPERUSER_OSO_KOD,
             fir_kod=settings.FIRST_SUPERUSER_FIR_KOD,
         )
-        user = crud.create_user(session=session, user_create=user_in)
+        user = user_crud.create_user(session=session, user_create=user_in)
+
+    if settings.ENVIRONMENT == "local":
+        order = Order(
+            kh_kod="000000",
+            kh_naz="test",
+            owner_id=user.id,
+        )
+        session.add(order)
+        session.commit()
+
+        for i in range(10):
+            product = Product(
+                index=f"test{i}",
+                price=random.randint(0, 1000) / 100,
+                description=f"Test product {i}",
+            )
+            session.add(product)
+        session.commit()

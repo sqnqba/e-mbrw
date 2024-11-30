@@ -30,7 +30,7 @@ services:
     depends_on:
       - db
     environment:
-      - ADMINER_DESIGN=pepa-linha-dark
+      - ADMINER_DESIGN=dracula
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public

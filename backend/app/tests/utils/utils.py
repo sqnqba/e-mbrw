@@ -14,8 +14,12 @@ def random_oso_kod() -> str:
     return "".join(random.choices(string.digits, k=6))
 
 
+def random_value() -> float:
+    return round(random.randint(0, 10000) / 100, 2)
+
+
 def random_fir_kod() -> str:
-    return "".join(random.choices(string.digits, k=4))
+    return f'S{"".join(random.choices(string.digits, k=2))}{random.choice(string.ascii_uppercase)}'
 
 
 def random_email() -> str:

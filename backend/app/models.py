@@ -1,6 +1,7 @@
-import uuid
+import datetime as dt
 
-from pydantic import EmailStr, PositiveInt
+from pydantic import EmailStr, PositiveInt, computed_field
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -44,14 +45,14 @@ class UpdatePassword(SQLModel):
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     hashed_password: str
     orders: list["Order"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
-    id: uuid.UUID
+    id: int
 
 
 class UsersPublic(SQLModel):
@@ -61,15 +62,13 @@ class UsersPublic(SQLModel):
 
 # Shared properties
 class OrderBase(SQLModel):
-    safo_nr: PositiveInt | None = Field(default=None, index=True)
-    kh_kod: str = Field(default="000000", min_length=6, max_length=6)
     fir_kod: str = Field(default="C000", min_length=4, max_length=4)
-    comment: str | None = Field(default=None, max_length=512)
+    comment: str | None = Field(default=None, max_length=1024)
 
 
 # Properties to receive on order creation
 class OrderCreate(OrderBase):
-    pass
+    kh_kod: str = Field(default="000000", min_length=6, max_length=6)
 
 
 # Properties to receive on order update
@@ -79,20 +78,33 @@ class OrderUpdate(OrderBase):
 
 # Database model, database table inferred from class name
 class Order(OrderBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     safo_id: PositiveInt | None = Field(default=None, index=True)
+    safo_nr: PositiveInt | None = Field(default=None, index=True)
     kh_kod: str = Field(default="000000", min_length=6, max_length=6)
-    owner_id: uuid.UUID = Field(
-        foreign_key="user.id", nullable=False, ondelete="CASCADE"
-    )
+    kh_naz: str = Field(default="", max_length=512)
+    created_at: dt.datetime = Field(default=dt.datetime.now(), nullable=False)
+    owner_id: int = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     owner: User | None = Relationship(back_populates="orders")
     items: list["OrderItem"] = Relationship(back_populates="order", cascade_delete=True)
+
+    @computed_field(return_type=float)
+    @hybrid_property
+    def value(self) -> float:
+        return sum(item.product.price * item.quantity for item in self.items)
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 # Properties to return via API, id is always required
 class OrderPublic(OrderBase):
-    id: uuid.UUID
-    owner_id: uuid.UUID
+    id: int
+    owner_id: int
+    created_at: dt.datetime
+    value: float
+    kh_kod: str
+    kh_naz: str = Field(default="", max_length=512)
 
 
 class OrdersPublic(SQLModel):
@@ -122,18 +134,31 @@ class NewPassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 
-class Product(SQLModel, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    name: str
-    description: str
-    price: float
+class ProductBase(SQLModel):
+    index: str = Field(default="", max_length=512)
+    price: float = Field(default=0.0)
+    description: str = Field(default="", max_length=1024)
+
+
+class Product(ProductBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
     orders: list["OrderItem"] = Relationship(back_populates="product")
+    updated_at: dt.datetime = Field(default=dt.datetime.now(), nullable=False)
+
+
+class OrderItemBase(SQLModel):
+    order_id: int
+    product_id: int
+    quantity: int
 
 
 class OrderItem(SQLModel, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    order_id: uuid.UUID = Field(foreign_key="order.id")
+    id: int | None = Field(default=None, primary_key=True)
     order: Order = Relationship(back_populates="items")
-    product_id: uuid.UUID = Field(foreign_key="product.id")
+    product_id: int = Field(foreign_key="product.id")
     product: Product = Relationship(back_populates="orders")
-    quantity: int
+    quantity: float
+
+
+class OrderItemCreate(OrderItemBase):
+    pass
