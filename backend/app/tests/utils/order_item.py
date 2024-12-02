@@ -9,7 +9,7 @@ from app.tests.utils.product import create_random_product
 
 def create_random_order_item(
     session: Session, order: Order | None, product: Product | None
-) -> Order:
+) -> OrderItem:
     if order is None:
         order = create_random_order(session)
     if product is None:

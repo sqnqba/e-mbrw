@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from sqlmodel import Session, select
@@ -13,9 +14,9 @@ def create_order_item(*, session: Session, order_item_in: OrderItemCreate) -> Or
     return order_item
 
 
-def read_order_items(*, session: Session, order_item_id: int) -> list[OrderItem]:
+def read_order_items(*, session: Session, order_id: uuid.UUID) -> Any:
     order_items = session.exec(
-        select(OrderItem).where(OrderItem.order_id == order_item_id)
+        select(OrderItem).where(OrderItem.order_id == order_id)
     ).all()
     return order_items
 

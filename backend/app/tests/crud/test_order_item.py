@@ -3,7 +3,7 @@ import random
 from sqlmodel import Session, delete
 
 from app.crud import order_item as crud
-from app.models import OrderItem, OrderItemUpdate
+from app.models import OrderItem, OrderItemCreate, OrderItemUpdate
 from app.tests.utils.order import create_random_order
 from app.tests.utils.order_item import create_random_order_item
 from app.tests.utils.product import create_random_product
@@ -16,16 +16,16 @@ def test_create_order_item(db: Session) -> None:
     order = create_random_order(db, user)
     assert order is not None
     quantity = random.randint(1, 10)
-    product_id = random.randint(1, 10)
-    order_item_in = {
-        "order_id": order.id,
-        "product_id": product_id,
-        "quantity": quantity,
-    }
+    product = create_random_product(db)
+    order_item_in = OrderItemCreate(
+        order_id=order.id,
+        product_id=product.id,
+        quantity=quantity,
+    )
 
     crud.create_order_item(session=db, order_item_in=order_item_in)
 
-    order_items = crud.read_order_items(session=db, order_item_id=order.id)
+    order_items = crud.read_order_items(session=db, order_id=order.id)
 
     assert len(order_items) > 0
 
@@ -41,7 +41,9 @@ def test_read_order_order_item(db: Session) -> None:
     assert product is not None
     order_item = crud.create_order_item(
         session=db,
-        order_item_in={"order_id": order.id, "product_id": product.id, "quantity": 1},
+        order_item_in=OrderItemCreate(
+            order_id=order.id, product_id=product.id, quantity=1
+        ),
     )
     assert order_item is not None
     assert order_item.order_id == order.id

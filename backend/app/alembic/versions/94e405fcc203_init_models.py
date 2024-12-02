@@ -1,8 +1,8 @@
 """Init models
 
-Revision ID: 6301534db914
+Revision ID: 94e405fcc203
 Revises:
-Create Date: 2024-12-02 09:55:39.392326
+Create Date: 2024-12-02 19:11:16.947884
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel.sql.sqltypes
 
 
 # revision identifiers, used by Alembic.
-revision = '6301534db914'
+revision = '94e405fcc203'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('index', sqlmodel.sql.sqltypes.AutoString(length=512), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(length=1024), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -35,7 +35,7 @@ def upgrade():
     sa.Column('full_name', sqlmodel.sql.sqltypes.AutoString(length=255), nullable=True),
     sa.Column('oso_kod', sqlmodel.sql.sqltypes.AutoString(length=6), nullable=True),
     sa.Column('fir_kod', sqlmodel.sql.sqltypes.AutoString(length=4), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('hashed_password', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -43,13 +43,13 @@ def upgrade():
     op.create_table('order',
     sa.Column('fir_kod', sqlmodel.sql.sqltypes.AutoString(length=4), nullable=False),
     sa.Column('comment', sqlmodel.sql.sqltypes.AutoString(length=1024), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('safo_id', sa.Integer(), nullable=True),
     sa.Column('safo_nr', sa.Integer(), nullable=True),
     sa.Column('kh_kod', sqlmodel.sql.sqltypes.AutoString(length=6), nullable=False),
     sa.Column('kh_naz', sqlmodel.sql.sqltypes.AutoString(length=512), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('owner_id', sa.Integer(), nullable=False),
+    sa.Column('owner_id', sa.Uuid(), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
@@ -57,9 +57,9 @@ def upgrade():
     op.create_index(op.f('ix_order_safo_nr'), 'order', ['safo_nr'], unique=False)
     op.create_table('orderitem',
     sa.Column('quantity', sa.Float(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('order_id', sa.Integer(), nullable=False),
-    sa.Column('product_id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
+    sa.Column('order_id', sa.Uuid(), nullable=False),
+    sa.Column('product_id', sa.Uuid(), nullable=False),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
     sa.PrimaryKeyConstraint('id')

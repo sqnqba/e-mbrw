@@ -1,4 +1,5 @@
 import datetime as dt
+import uuid
 
 from pydantic import EmailStr, PositiveInt, computed_field
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -45,14 +46,14 @@ class UpdatePassword(SQLModel):
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     orders: list["Order"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
-    id: int
+    id: uuid.UUID
 
 
 class UsersPublic(SQLModel):
@@ -78,13 +79,15 @@ class OrderUpdate(OrderBase):
 
 # Database model, database table inferred from class name
 class Order(OrderBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     safo_id: PositiveInt | None = Field(default=None, index=True)
     safo_nr: PositiveInt | None = Field(default=None, index=True)
     kh_kod: str = Field(default="000000", min_length=6, max_length=6)
     kh_naz: str = Field(default="", max_length=512)
     created_at: dt.datetime = Field(default=dt.datetime.now(), nullable=False)
-    owner_id: int = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    owner_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
     owner: User | None = Relationship(back_populates="orders")
     order_items: list["OrderItem"] = Relationship(
         back_populates="order", cascade_delete=True
@@ -104,8 +107,8 @@ class Order(OrderBase, table=True):
 
 # Properties to return via API, id is always required
 class OrderPublic(OrderBase):
-    id: int
-    owner_id: int
+    id: uuid.UUID
+    owner_id: uuid.UUID
     created_at: dt.datetime
     value: float
     kh_kod: str
@@ -150,23 +153,25 @@ class ProductCreate(ProductBase):
 
 
 class Product(ProductBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     order_items: list["OrderItem"] = Relationship(back_populates="product")
     updated_at: dt.datetime = Field(default=dt.datetime.now(), nullable=False)
 
 
 class OrderItemBase(SQLModel):
-    order_id: int
-    product_id: int
+    order_id: uuid.UUID
+    product_id: uuid.UUID
     quantity: float
 
 
 class OrderItem(OrderItemBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
-    order_id: int = Field(foreign_key="order.id", nullable=False, ondelete="CASCADE")
+    order_id: uuid.UUID = Field(
+        foreign_key="order.id", nullable=False, ondelete="CASCADE"
+    )
     order: Order = Relationship(back_populates="order_items")
-    product_id: int = Field(foreign_key="product.id")
+    product_id: uuid.UUID = Field(foreign_key="product.id")
     product: Product = Relationship(back_populates="order_items")
 
 
@@ -175,13 +180,13 @@ class OrderItemCreate(OrderItemBase):
 
 
 class OrderItemUpdate(SQLModel):
-    product_id: int
+    product_id: uuid.UUID
     quantity: float
 
 
 class OrderItemPubic(SQLModel):
-    id: int
-    order_id: int
+    id: uuid.UUID
+    order_id: uuid.UUID
     product: Product
     quantity: float
 

@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
@@ -29,7 +30,7 @@ def create_order(
 
 
 @router.get("/{id}", response_model=OrderPublic)
-def read_order(session: SessionDep, current_user: CurrentUser, id: int) -> Any:
+def read_order(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
     """
     Get order by ID.
     """
@@ -63,7 +64,7 @@ def update_order(
     *,
     session: SessionDep,
     current_user: CurrentUser,
-    id: int,
+    id: uuid.UUID,
     order_in: OrderUpdate,
 ) -> Any:
     """
@@ -83,7 +84,9 @@ def update_order(
 
 
 @router.delete("/{id}")
-def delete_order(session: SessionDep, current_user: CurrentUser, id: int) -> Message:
+def delete_order(
+    session: SessionDep, current_user: CurrentUser, id: uuid.UUID
+) -> Message:
     """
     Delete an order.
     """
