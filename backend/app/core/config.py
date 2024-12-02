@@ -50,6 +50,16 @@ class Settings(BaseSettings):
             self.FRONTEND_HOST
         ]
 
+    ORACLE_USERNAME: str
+    ORACLE_PASSWORD: str
+    ORACLE_SERVER: str
+    LD_LIBRARY_PATH: str
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def ORACLE_TEST_DNS(self) -> str:
+        return f"oracle+oracledb://{self.ORACLE_USERNAME}:{self.ORACLE_PASSWORD}@{self.ORACLE_SERVER}"
+
     PROJECT_NAME: str
     SENTRY_DSN: HttpUrl | None = None
     POSTGRES_SERVER: str

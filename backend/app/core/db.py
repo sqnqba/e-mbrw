@@ -8,6 +8,15 @@ from app.models import Order, Product, User, UserCreate
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
+oracle_engine = create_engine(
+    settings.ORACLE_TEST_DNS,
+    thick_mode={
+        "lib_dir": settings.LD_LIBRARY_PATH,
+        "driver_name": "oracledb",
+    },
+    echo=False if 1 else True,
+    future=True,
+)
 
 # make sure all SQLModel models are imported (app.models) before initializing DB
 # otherwise, SQLModel might fail to initialize relationships properly

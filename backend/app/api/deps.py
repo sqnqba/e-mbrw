@@ -6,11 +6,12 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from pydantic import ValidationError
+from sqlalchemy.engine import Connection
 from sqlmodel import Session
 
 from app.core import security
 from app.core.config import settings
-from app.core.db import engine
+from app.core.db import engine, oracle_engine
 from app.models import TokenPayload, User
 
 reusable_oauth2 = OAuth2PasswordBearer(
@@ -23,7 +24,13 @@ def get_db() -> Generator[Session, None, None]:
         yield session
 
 
+def get_oracle_db() -> Generator[Connection, None, None]:
+    with oracle_engine.connect() as connection:
+        yield connection
+
+
 SessionDep = Annotated[Session, Depends(get_db)]
+OracleConnDep = Annotated[Connection, Depends(get_oracle_db)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
 
