@@ -145,6 +145,10 @@ class ProductBase(SQLModel):
     description: str = Field(default="", max_length=1024)
 
 
+class ProductCreate(ProductBase):
+    pass
+
+
 class Product(ProductBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     order_items: list["OrderItem"] = Relationship(back_populates="product")
@@ -168,3 +172,20 @@ class OrderItem(OrderItemBase, table=True):
 
 class OrderItemCreate(OrderItemBase):
     pass
+
+
+class OrderItemUpdate(SQLModel):
+    product_id: int
+    quantity: float
+
+
+class OrderItemPubic(SQLModel):
+    id: int
+    order_id: int
+    product: Product
+    quantity: float
+
+
+class OrderItemsPublic(SQLModel):
+    data: list[OrderItemPubic]
+    count: int
