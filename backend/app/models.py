@@ -86,12 +86,17 @@ class Order(OrderBase, table=True):
     created_at: dt.datetime = Field(default=dt.datetime.now(), nullable=False)
     owner_id: int = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     owner: User | None = Relationship(back_populates="orders")
-    items: list["OrderItem"] = Relationship(back_populates="order", cascade_delete=True)
+    order_items: list["OrderItem"] = Relationship(
+        back_populates="order", cascade_delete=True
+    )
 
     @computed_field(return_type=float)
     @hybrid_property
     def value(self) -> float:
-        return sum(item.product.price * item.quantity for item in self.items)
+        return sum(
+            order_item.product.price * order_item.quantity
+            for order_item in self.order_items
+        )
 
     class Config:
         arbitrary_types_allowed = True
@@ -104,7 +109,7 @@ class OrderPublic(OrderBase):
     created_at: dt.datetime
     value: float
     kh_kod: str
-    kh_naz: str = Field(default="", max_length=512)
+    # kh_naz: str
 
 
 class OrdersPublic(SQLModel):
@@ -142,22 +147,23 @@ class ProductBase(SQLModel):
 
 class Product(ProductBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    orders: list["OrderItem"] = Relationship(back_populates="product")
+    order_items: list["OrderItem"] = Relationship(back_populates="product")
     updated_at: dt.datetime = Field(default=dt.datetime.now(), nullable=False)
 
 
 class OrderItemBase(SQLModel):
     order_id: int
     product_id: int
-    quantity: int
-
-
-class OrderItem(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    order: Order = Relationship(back_populates="items")
-    product_id: int = Field(foreign_key="product.id")
-    product: Product = Relationship(back_populates="orders")
     quantity: float
+
+
+class OrderItem(OrderItemBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+
+    order_id: int = Field(foreign_key="order.id", nullable=False, ondelete="CASCADE")
+    order: Order = Relationship(back_populates="order_items")
+    product_id: int = Field(foreign_key="product.id")
+    product: Product = Relationship(back_populates="order_items")
 
 
 class OrderItemCreate(OrderItemBase):

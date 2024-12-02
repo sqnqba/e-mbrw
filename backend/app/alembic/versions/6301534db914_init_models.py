@@ -1,8 +1,8 @@
 """Init models
 
-Revision ID: 09d22a641d53
+Revision ID: 6301534db914
 Revises:
-Create Date: 2024-11-30 13:07:38.750603
+Create Date: 2024-12-02 09:55:39.392326
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel.sql.sqltypes
 
 
 # revision identifiers, used by Alembic.
-revision = '09d22a641d53'
+revision = '6301534db914'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -56,11 +56,11 @@ def upgrade():
     op.create_index(op.f('ix_order_safo_id'), 'order', ['safo_id'], unique=False)
     op.create_index(op.f('ix_order_safo_nr'), 'order', ['safo_nr'], unique=False)
     op.create_table('orderitem',
+    sa.Column('quantity', sa.Float(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('order_id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
-    sa.Column('quantity', sa.Float(), nullable=False),
-    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
+    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

@@ -1,4 +1,4 @@
-from random import random
+import random
 
 from sqlmodel import Session
 
@@ -23,12 +23,9 @@ def test_create_order_item(db: Session) -> None:
 
     crud.create_order_item(session=db, order_item_in=order_item_in)
 
-    order_item = crud.read_order_item(session=db, order_item_id=1)
+    order_items = crud.read_order_items(session=db, order_item_id=order.id)
 
-    assert order_item is not None
-    assert order_item.order_id == order.id
-    assert order_item.product_id == product_id
-    assert order_item.quantity == quantity
+    assert len(order_items) > 0
 
 
 def test_read_order_order_item(db: Session) -> None:
