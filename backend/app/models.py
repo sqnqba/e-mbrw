@@ -194,3 +194,19 @@ class OrderItemPubic(SQLModel):
 class OrderItemsPublic(SQLModel):
     data: list[OrderItemPubic]
     count: int
+
+
+class Client(SQLModel):
+    kod: str | None = None
+    naz_s: str | None = None
+    naz: str | None = None
+    nip: str | None = None
+    adr_k: str | None = None
+    adr_m: str | None = None
+    adr_u: str | None = None
+    adr_d: str | None = None
+
+
+class Clients(SQLModel):
+    data: list[Client]
+    count: int

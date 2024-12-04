@@ -14,7 +14,7 @@ oracle_engine = create_engine(
         "lib_dir": settings.LD_LIBRARY_PATH,
         "driver_name": "oracledb",
     },
-    echo=False if 1 else True,
+    echo=True,
     future=True,
 )
 
