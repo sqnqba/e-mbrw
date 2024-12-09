@@ -8,6 +8,7 @@ kh_fir_exists = (
     .where(
         t_kh_fir.c.kh_kod == t_kh.c.kod,
         t_kh_fir.c.fir_kod == bindparam("b_fir_kod"),
+        t_kh_fir.c.sta_od.in_(["O", "X"]),
     )
     .exists()
 )

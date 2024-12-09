@@ -52,13 +52,21 @@ class Settings(BaseSettings):
 
     ORACLE_USERNAME: str
     ORACLE_PASSWORD: str
+    # ORACLE_PASSWORD_P: str
+
     ORACLE_SERVER: str
+    # ORACLE_SERVER_P: str
     LD_LIBRARY_PATH: str
 
     @computed_field  # type: ignore[prop-decorator]
     @property
     def ORACLE_TEST_DNS(self) -> str:
         return f"oracle+oracledb://{self.ORACLE_USERNAME}:{self.ORACLE_PASSWORD}@{self.ORACLE_SERVER}"
+
+    # @computed_field  # type: ignore[prop-decorator]
+    # @property
+    # def ORACLE_PROD_DNS(self) -> str:
+    #     return f"oracle+oracledb://{self.ORACLE_USERNAME}:{self.ORACLE_PASSWORD_P}@{self.ORACLE_SERVER_P}"
 
     PROJECT_NAME: str
     SENTRY_DSN: HttpUrl | None = None

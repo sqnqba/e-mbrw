@@ -210,3 +210,11 @@ class Client(SQLModel):
 class Clients(SQLModel):
     data: list[Client]
     count: int
+
+
+class SafoProduct(SQLModel):
+    kod: str | None = None
+    kod_p: str | None = None
+    naz: str | None = None
+    kod_k: str | None = None
+    cen: float | None = None
