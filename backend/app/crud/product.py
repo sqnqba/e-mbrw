@@ -39,6 +39,7 @@ def sync_data(
                 product.price = cen
                 product.price_updated_at = dt.date.today()
                 session.add(product)
+                session.commit()
         else:
             cen = conn.execute(
                 sa.func.daj_cen_br(
@@ -54,7 +55,7 @@ def sync_data(
                 price=cen,
             )
             session.add(product)
-        session.commit()
+            session.commit()
 
 
 def get_product_price(
@@ -101,20 +102,6 @@ def get_product_price(
 def get_product(session: SessionDep, conn: Connection, code: str, fir_code: str):
     code = code.upper()
     local_stmt = sm.select(Product).where(Product.code == code)
-    local_data = session.exec(local_stmt).all()
-    local_data_codes = set({row.code for row in local_data})
-
-    local_data_outdated = (
-        set(
-            {
-                row.code
-                for row in local_data
-                if row.price_updated_at
-                < dt.datetime.combine(dt.date.today(), dt.datetime.min.time())
-            }
-        )
-        or set()
-    )
 
     remote_stmt = select_tow
     remote_stmt += lambda s: s.where(
@@ -124,10 +111,6 @@ def get_product(session: SessionDep, conn: Connection, code: str, fir_code: str)
                     t_tow.c.kod == code,
                     t_tow.c.tow_kod_pg == code,
                 ),
-                ~t_tow.c.kod.in_(local_data_codes),
-            ),
-            sa.or_(
-                t_tow.c.kod.in_(local_data_outdated),
             ),
         )
     )
