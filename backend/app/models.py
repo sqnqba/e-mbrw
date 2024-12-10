@@ -143,9 +143,11 @@ class NewPassword(SQLModel):
 
 
 class ProductBase(SQLModel):
+    code: str = Field(unique=True, max_length=6)
     index: str = Field(default="", max_length=512)
+    name: str = Field(default="", max_length=4096)
+    full_name: str = Field(default="", max_length=512)
     price: float = Field(default=0.0)
-    description: str = Field(default="", max_length=1024)
 
 
 class ProductCreate(ProductBase):
@@ -155,7 +157,22 @@ class ProductCreate(ProductBase):
 class Product(ProductBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     order_items: list["OrderItem"] = Relationship(back_populates="product")
-    updated_at: dt.datetime = Field(default=dt.datetime.now(), nullable=False)
+    price_updated_at: dt.date | None = Field(
+        default_factory=lambda: dt.datetime.now(),
+        nullable=False,
+        sa_column_kwargs={
+            "onupdate": lambda: dt.datetime.now(),
+        },
+    )
+
+
+class ProductPublic(ProductBase):
+    id: uuid.UUID
+
+
+class ProductsPublic(SQLModel):
+    data: list[ProductPublic]
+    count: int
 
 
 class OrderItemBase(SQLModel):
@@ -210,11 +227,3 @@ class Client(SQLModel):
 class Clients(SQLModel):
     data: list[Client]
     count: int
-
-
-class SafoProduct(SQLModel):
-    kod: str | None = None
-    kod_p: str | None = None
-    naz: str | None = None
-    kod_k: str | None = None
-    cen: float | None = None

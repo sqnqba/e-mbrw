@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # explicitly set user/group IDs
 RUN set -eux; \
@@ -89,7 +89,7 @@ RUN set -ex; \
 ENV PG_MAJOR 17
 ENV PATH $PATH:/usr/lib/postgresql/$PG_MAJOR/bin
 
-ENV PG_VERSION 17.0-1.pgdg110+1
+ENV PG_VERSION 17.2-1.pgdg120+1
 
 RUN set -ex; \
 	\
@@ -97,7 +97,7 @@ RUN set -ex; \
 	export PYTHONDONTWRITEBYTECODE=1; \
 	\
 	dpkgArch="$(dpkg --print-architecture)"; \
-	aptRepo="[ signed-by=/usr/local/share/keyrings/postgres.gpg.asc ] http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main $PG_MAJOR"; \
+	aptRepo="[ signed-by=/usr/local/share/keyrings/postgres.gpg.asc ] http://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main $PG_MAJOR"; \
 	case "$dpkgArch" in \
 		amd64 | arm64 | ppc64el | s390x) \
 # arches officialy built by upstream
