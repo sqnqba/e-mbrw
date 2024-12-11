@@ -14,6 +14,8 @@ oracle_engine = create_engine(
     },
     echo=True,
     future=True,
+    connect_args={"tcp_connect_timeout": 10},
+    pool_timeout=10,
 )
 
 # make sure all SQLModel models are imported (app.models) before initializing DB

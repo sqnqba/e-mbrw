@@ -26,7 +26,12 @@ def get_db() -> Generator[Session, None, None]:
 
 def get_oracle_db() -> Generator[Connection, None, None]:
     with oracle_engine.connect() as connection:
-        yield connection
+        try:
+            yield connection
+        except Exception as e:
+            raise e
+        finally:
+            connection.close()
 
 
 SessionDep = Annotated[Session, Depends(get_db)]

@@ -30,7 +30,10 @@ def read_product(
     code: str,
 ) -> Any:
     product = crud.get_product(
-        session=session, conn=conn, code=code, fir_code=current_user.fir_kod
+        session=session,
+        conn=conn,
+        code=code.strip().upper(),
+        fir_code=current_user.fir_kod,
     )
     if not product:
         raise HTTPException(status_code=404, detail="Brak produktu o podanym kodzie")

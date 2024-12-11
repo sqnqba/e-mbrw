@@ -147,6 +147,7 @@ class ProductBase(SQLModel):
     index: str = Field(default="", max_length=512)
     name: str = Field(default="", max_length=4096)
     full_name: str = Field(default="", max_length=512)
+    shallow_code: bool = Field(default=False)
     price: float = Field(default=0.0)
 
 

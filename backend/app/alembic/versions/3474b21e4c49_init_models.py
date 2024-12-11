@@ -26,6 +26,7 @@ def upgrade():
     sa.Column('full_name', sqlmodel.sql.sqltypes.AutoString(length=512), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('id', sa.Uuid(), nullable=False),
+    sa.Column('shallow_code', sa.Boolean(), nullable=False),
     sa.Column('price_updated_at', sa.Date(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('code')
