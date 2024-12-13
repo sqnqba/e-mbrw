@@ -2,7 +2,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
-from app.api.deps import CurrentUser, OracleConnDep, SessionDep
+from app.api.deps import CurrentUser, OracleConnectionDep, SessionDep
 from app.crud import product as crud
 from app.models import ProductPublic, ProductsPublic
 
@@ -12,7 +12,7 @@ router = APIRouter()
 @router.get("", response_model=ProductsPublic)
 def read_products(
     session: SessionDep,
-    conn: OracleConnDep,
+    conn: OracleConnectionDep,
     current_user: CurrentUser,
     naz: str | None = None,
 ) -> Any:
@@ -22,12 +22,12 @@ def read_products(
     return {"data": products, "count": len(products)}
 
 
-@router.get("/{code}", response_model=ProductPublic)
+@router.get("/{9D685F}", response_model=ProductPublic)
 def read_product(
     session: SessionDep,
-    conn: OracleConnDep,
+    conn: OracleConnectionDep,
     current_user: CurrentUser,
-    code: str,
+    code: str = "9D685F",
 ) -> Any:
     product = crud.get_product(
         session=session,

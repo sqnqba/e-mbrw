@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from pydantic import ValidationError
 from sqlalchemy.engine import Connection
+from sqlalchemy.orm import Session as OracleSession
 from sqlmodel import Session
 
 from app.core import security
@@ -24,18 +25,18 @@ def get_db() -> Generator[Session, None, None]:
         yield session
 
 
-def get_oracle_db() -> Generator[Connection, None, None]:
+def get_oracle_db_session() -> Generator[OracleSession, None, None]:
+    with OracleSession(oracle_engine) as session:
+        yield session
+
+
+def get_oracle_db_connection() -> Generator[Connection, None, None]:
     with oracle_engine.connect() as connection:
-        try:
-            yield connection
-        except Exception as e:
-            raise e
-        finally:
-            connection.close()
+        yield connection
 
 
 SessionDep = Annotated[Session, Depends(get_db)]
-OracleConnDep = Annotated[Connection, Depends(get_oracle_db)]
+OracleConnectionDep = Annotated[Connection, Depends(get_oracle_db_connection)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
 

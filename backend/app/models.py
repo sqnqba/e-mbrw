@@ -142,12 +142,25 @@ class NewPassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 
+class ProductFeatureLink(SQLModel, table=True):
+    product_id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        foreign_key="product.id",
+        primary_key=True,
+        ondelete="CASCADE",
+    )
+    feature_id: uuid.UUID = Field(
+        default_factory=uuid.uuid4, foreign_key="feature.id", primary_key=True
+    )
+
+
 class ProductBase(SQLModel):
     code: str = Field(unique=True, max_length=6)
     index: str = Field(default="", max_length=512)
     name: str = Field(default="", max_length=4096)
     full_name: str = Field(default="", max_length=512)
-    shallow_code: bool = Field(default=False)
+    is_shallow: bool = Field(default=False)
+    parent_code: str | None = Field(default=None, max_length=6)
     price: float = Field(default=0.0)
 
 
@@ -165,15 +178,30 @@ class Product(ProductBase, table=True):
             "onupdate": lambda: dt.datetime.now(),
         },
     )
+    features: list["Feature"] | None = Relationship(
+        back_populates="products", link_model=ProductFeatureLink
+    )
 
 
 class ProductPublic(ProductBase):
-    id: uuid.UUID
+    # id: uuid.UUID
+    features: list["Feature"] | None = Field(default=None)
 
 
 class ProductsPublic(SQLModel):
     data: list[ProductPublic]
     count: int
+
+
+class Feature(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+    feature_name: str = Field(default="", max_length=64, unique=True)
+    feature_value: str = Field(default="", max_length=128, unique=True)
+
+    products: list["Product"] = Relationship(
+        back_populates="features", link_model=ProductFeatureLink
+    )
 
 
 class OrderItemBase(SQLModel):
